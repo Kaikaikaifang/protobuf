@@ -4300,7 +4300,7 @@ class ValidationErrorTest : public testing::Test {
   void SetUp() override {
     // Enable extension declaration enforcement since most test cases want to
     // exercise the full validation.
-    pool_.EnforceExtensionDeclarations(true);
+    pool_.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   }
   // Parse file_text as a FileDescriptorProto in text format and add it
   // to the DescriptorPool.  Expect no errors.
@@ -11719,7 +11719,7 @@ TEST_F(ValidationErrorTest, ExtensionDeclarationsMismatchFullNameAllowed) {
   // Make sure that extension declaration names and types are not validated
   // outside of protoc. This is important for allowing extensions to be renamed
   // safely.
-  pool_.EnforceExtensionDeclarations(false);
+  pool_.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kNoEnforcement);
   BuildFile(
       R"pb(
         name: "foo.proto"
@@ -11905,7 +11905,7 @@ TEST_P(ExtensionDeclarationsTest, DotPrefixTypeCompile) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   EXPECT_NE(pool.BuildFile(*file_proto), nullptr);
 }
 
@@ -11938,7 +11938,7 @@ TEST_P(ExtensionDeclarationsTest, EnumTypeCompile) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   EXPECT_NE(pool.BuildFile(*file_proto), nullptr);
 }
 
@@ -11975,7 +11975,7 @@ TEST_P(ExtensionDeclarationsTest, MismatchEnumType) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12011,7 +12011,7 @@ TEST_P(ExtensionDeclarationsTest, DotPrefixFullNameCompile) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   EXPECT_NE(pool.BuildFile(*file_proto), nullptr);
 }
 
@@ -12040,7 +12040,7 @@ TEST_P(ExtensionDeclarationsTest, MismatchDotPrefixTypeExpectingMessage) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12070,7 +12070,7 @@ TEST_P(ExtensionDeclarationsTest, MismatchDotPrefixTypeExpectingNonMessage) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12105,7 +12105,7 @@ TEST_P(ExtensionDeclarationsTest, MismatchMessageType) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12135,7 +12135,7 @@ TEST_P(ExtensionDeclarationsTest, NonMessageTypeCompile) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   EXPECT_NE(pool.BuildFile(*file_proto), nullptr);
 }
 
@@ -12164,7 +12164,7 @@ TEST_P(ExtensionDeclarationsTest, MismatchNonMessageType) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12199,7 +12199,7 @@ TEST_P(ExtensionDeclarationsTest, MismatchCardinalityExpectingRepeated) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12239,7 +12239,7 @@ TEST_P(ExtensionDeclarationsTest, MismatchCardinalityExpectingOptional) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12271,7 +12271,7 @@ TEST_P(ExtensionDeclarationsTest, TypeDoesNotLookLikeIdentifier) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   MockErrorCollector error_collector;
   EXPECT_EQ(pool.BuildFileCollectingErrors(*file_proto, &error_collector),
             nullptr);
@@ -12317,7 +12317,7 @@ TEST_P(ExtensionDeclarationsTest, MultipleDeclarationsInARangeCompile) {
   ASSERT_OK(file_proto);
 
   DescriptorPool pool;
-  pool.EnforceExtensionDeclarations(true);
+  pool.EnforceExtensionDeclarations(ExtDeclEnforcementLevel::kAllExtensions);
   EXPECT_NE(pool.BuildFile(*file_proto), nullptr);
 }
 
